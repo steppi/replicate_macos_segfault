@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
+        np_install: ['openblas', 'mkl']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -16,10 +17,17 @@ jobs:
         with:
           python-version: 3.7
       - name: Install segfaulting code
+        if: startsWith(matrix.np_install, 'openblas')
         shell: bash -l {0}
         run: |
           python -m pip install numpy
           python -m pip install -vvv .
+      - name: Install segfaulting code
+        if: startsWith(matrix.np_install, 'mkl')
+        shell: bash -l {0}
+        run: |
+          conda install -y numpy scipy
+          python -m pip install --upgrade-strategy only-if-needed -vvv .
       - name: Run segfaulting code on MacOS
         if: startsWith(matrix.os, 'macos')
         shell: bash -l {0}

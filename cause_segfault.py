@@ -11,6 +11,7 @@ parser.add_argument('-n', type=int, default=100)
 parser.add_argument('--order', type=int, default=24)
 args = parser.parse_args()
 
+np.show_config()
 print(f'n_mats: {args.n} order: {args.order}')
 shape = (args.n, args.order, args.order)
 dmats = np.random.rand(*shape) + 1j*np.random.rand(*shape)
