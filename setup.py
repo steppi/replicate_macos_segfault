@@ -4,13 +4,18 @@ from setuptools import setup, Extension
 def get_c_extension():
     import os
     import numpy as np
+    from sys import platform
     include_dirs = [np.get_include(), 'c']
     sources = ['c/_segfault.c', 'c/dyn_mat.c', 'c/load_libs.c']
 
-    brew_prefix = '/usr/local'
-    os.environ['CC'] = f'{brew_prefix}/opt/llvm/bin/clang'
-    link_args = [f'-L{brew_prefix}/opt/llvm/lib', '-fopenmp']
-    compile_args = ['-fopenmp']
+    if platform == 'darwin':
+        brew_prefix = '/usr/local'
+        os.environ['CC'] = f'{brew_prefix}/opt/llvm/bin/clang'
+        link_args = [f'-L{brew_prefix}/opt/llvm/lib', '-fopenmp']
+        compile_args = ['-fopenmp']
+    else:
+        link_args = None
+        compile_args = ['/openmp']
 
     c_extension = Extension(
         'segfault._segfault',
